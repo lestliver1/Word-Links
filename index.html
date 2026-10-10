@@ -1,0 +1,143 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Word Links — a quick crossword-style chaining puzzle from The Bostonian Times.">
+  <title>Word Links — The Bostonian Times</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="masthead">
+    <p class="edition">EST. 2026 <span aria-hidden="true">•</span> DAILY PUZZLES</p>
+    <button class="brand" type="button" data-go-home aria-label="Return to menu">THE BOSTONIAN TIMES</button>
+    <div class="rule"></div>
+  </header>
+
+  <main>
+    <section class="screen home-screen is-active" id="homeScreen" aria-labelledby="gameTitle">
+      <div class="home-copy">
+        <p class="kicker">A DAILY WORD PUZZLE</p>
+        <h1 id="gameTitle"><span>WORD</span><span>LINKS</span></h1>
+        <p class="dek">Build a chain. Connect the words.<br>Spend as few points as possible.</p>
+        <div class="home-actions">
+          <button class="btn btn-dark" id="playButton" type="button">PLAY</button>
+          <button class="btn btn-light" id="calendarButton" type="button">CALENDAR</button>
+          <button class="btn btn-light" data-open-rules type="button">HOW TO PLAY</button>
+        </div>
+      </div>
+      <div class="mini-grid" aria-hidden="true">
+        <div class="mini-word mini-one"><span>L</span><span>I</span><span>N</span><span>K</span></div>
+        <div class="mini-word mini-two"><span>W</span><span>O</span><span>R</span><span>D</span></div>
+      </div>
+    </section>
+
+    <section class="screen game-screen" id="gameScreen" aria-labelledby="boardTitle">
+      <div class="game-topline">
+        <div>
+          <p class="kicker">WORD LINKS <span id="puzzleNumber"></span> · <span id="difficulty"></span></p>
+          <h2 id="boardTitle">Connect the two bold words.</h2>
+          <p class="puzzle-date" id="puzzleDate"></p>
+        </div>
+        <div class="game-actions">
+          <div class="score-box" aria-live="polite">
+            <span>SCORE</span>
+            <strong id="score">0</strong>
+          </div>
+        </div>
+      </div>
+
+      <div class="game-layout">
+        <div class="board-wrap">
+          <div id="grid" class="grid" role="grid" aria-label="15 by 15 Word Links board"></div>
+          <p class="board-note" id="boardNote">Select a square, enter a word, then choose its direction.</p>
+        </div>
+
+        <aside class="entry-panel" aria-label="Add a word">
+          <div class="panel-heading">
+            <span>YOUR MOVE</span>
+            <button class="text-button" data-open-rules type="button">RULES</button>
+          </div>
+
+          <label for="wordInput">WORD</label>
+          <input id="wordInput" type="text" maxlength="15" autocomplete="off" spellcheck="false" placeholder="TYPE A WORD">
+
+          <fieldset>
+            <legend>DIRECTION</legend>
+            <div class="direction-picker">
+              <label><input type="radio" name="direction" value="horizontal" checked><span>→ HORIZONTAL</span></label>
+              <label><input type="radio" name="direction" value="vertical"><span>↓ VERTICAL</span></label>
+            </div>
+          </fieldset>
+
+          <div class="start-position">
+            <div><span>START</span><strong id="selectedPosition">—</strong></div>
+            <p>Click any square to set the first letter.</p>
+          </div>
+
+          <button class="btn btn-dark place-button" id="placeButton" type="button">PLACE WORD</button>
+          <p class="message" id="message" aria-live="polite"></p>
+
+          <div class="cost-key">
+            <span>EACH WORD</span>
+            <strong>10 + 1 PER LETTER</strong>
+          </div>
+        </aside>
+      </div>
+    </section>
+  </main>
+
+  <dialog id="rulesDialog" class="modal">
+    <form method="dialog" class="modal-card">
+      <div class="modal-topline">
+        <p class="kicker">HOW TO PLAY</p>
+        <button class="icon-button" value="close" aria-label="Close rules">×</button>
+      </div>
+      <h2>MAKE THE<br>CONNECTION.</h2>
+      <ol>
+        <li><span>01</span><p>Two starting words are already on the 15 × 15 board.</p></li>
+        <li><span>02</span><p>Add real words across or down. Existing letters can be reused wherever they match.</p></li>
+        <li><span>03</span><p>Each word must share a letter with the board and add a new letter. Join the two starting words to win.</p></li>
+        <li><span>04</span><p>Every word costs 10 points, plus 1 point for each letter. Low score wins.</p></li>
+      </ol>
+      <button class="btn btn-dark modal-play" id="modalPlayButton" value="close" type="submit">LET'S PLAY</button>
+    </form>
+  </dialog>
+
+  <dialog id="calendarDialog" class="modal calendar-modal" aria-labelledby="calendarTitle">
+    <div class="modal-card">
+      <div class="modal-topline">
+        <p class="kicker">PUZZLE ARCHIVE</p>
+        <button class="icon-button" id="closeCalendar" type="button" aria-label="Close calendar">×</button>
+      </div>
+      <h2 id="calendarTitle">CHOOSE A DAY.</h2>
+      <p class="calendar-copy">A new puzzle arrives each day. Sundays are easiest; Saturdays are hardest.</p>
+      <div class="calendar-heading">
+        <button id="previousMonth" class="calendar-arrow" type="button" aria-label="Previous month">‹</button>
+        <strong id="calendarMonth"></strong>
+        <button id="nextMonth" class="calendar-arrow" type="button" aria-label="Next month">›</button>
+      </div>
+      <div class="calendar-weekdays" aria-hidden="true"><span>SU</span><span>MO</span><span>TU</span><span>WE</span><span>TH</span><span>FR</span><span>SA</span></div>
+      <div id="calendarDays" class="calendar-days"></div>
+      <p class="calendar-note">Select today or any earlier date to play its puzzle.</p>
+    </div>
+  </dialog>
+
+  <dialog id="winDialog" class="modal win-modal">
+    <div class="modal-card">
+      <p class="kicker">CONNECTION MADE</p>
+      <h2>NICE<br>LINK.</h2>
+      <p class="win-copy">You connected the starting words in <strong id="finalMoves">0 moves</strong> for a total of <strong id="finalScore">0 points</strong>.</p>
+      <button class="btn btn-light" id="menuButton" type="button">BACK TO MENU</button>
+    </div>
+  </dialog>
+
+  <footer>
+    <span>THE BOSTONIAN TIMES</span>
+    <span>WORDS CONNECT US</span>
+  </footer>
+
+  <script src="word-list.js"></script>
+  <script src="game.js"></script>
+</body>
+</html>
